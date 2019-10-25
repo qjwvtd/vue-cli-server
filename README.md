@@ -1,4 +1,4 @@
-# DH-SASSWEB
+# vue-cli-server exzample
 
 ## Project setup
 ```
