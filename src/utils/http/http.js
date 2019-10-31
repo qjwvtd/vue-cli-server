@@ -42,9 +42,27 @@ function checkStatus (response) {
       Message({ message: response.data.msg || '未知异常', type: 'error' })
     }
     return response
-  } else {
-    Message({ message: '服务器异常,' + response.statusText, type: 'error' })
-    return response
+  }
+  if (response.status === 401) {
+    Message.error('请求授权失败')
+    setTimeout(() => {
+      router.push('/login/userLogin')
+    }, 1500)
+  }
+  if (response.status === 401) {
+    Message.error('请求授权失败')
+  }
+  if (response.status === 403) {
+    Message.error('请求不允许')
+  }
+  if (response.status === 404) {
+    Message.error('没有发现文件、查询或URl')
+  }
+  if (response.status === 405) {
+    Message.error('Request-Line字段定义的方法不允许')
+  }
+  if (response.status >= 500) {
+    Message.error('服务器内部错误,' + response.statusText)
   }
 }
 
