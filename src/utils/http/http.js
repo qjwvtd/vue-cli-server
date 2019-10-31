@@ -26,42 +26,25 @@ axios.interceptors.response.use(response => response, error => Promise.resolve(e
 
 function checkStatus (response) {
   console.log(response)
-  if (!response) { return }
-  if (response && response.status === 200 || response && response.status === 304) {
-    if (response.data.code !== 0 && response.data.code !== 200) {
-      if (response.data.code === 401) {
-        Message.error('登录已过期,请重新登录')
-        setTimeout(() => {
-          router.push('/login/userLogin')
-        }, 1500)
-      } else {
-        if (response.data.data) {
-          Message({ message: response.data.data.msg, type: 'error' })
-        } else {
-          Message({ message: response.data.msg, type: 'error' })
-        }  
-      }
+  if (!response) {
+    Message.error('网络故障,请检查您的网络')
+    return
+  }
+  if (response.status === 200 || response.status === 304) {
+    if (response.data.code === 401) {
+      Message.error('登录已过期,请重新登录')
+      setTimeout(() => {
+        router.push('/login/userLogin')
+      }, 1500)
+      return
     }
-    
+    if (response.data.code !== 200) {
+      Message({ message: response.data.msg || '未知异常', type: 'error' })
+    }
     return response
-  }
-  if (response && response.status >= 500) {
-    return {
-      data: {
-        code: -500,
-        status: false,
-        message: response.data.error + ',' + response.data.message,
-        data: response.data
-      }
-    }
-  }
-  return {
-    data: {
-      code: -404,
-      status: false,
-      message: response.data.error,
-      data: response.data
-    }
+  } else {
+    Message({ message: '服务器异常,' + response.statusText, type: 'error' })
+    return response
   }
 }
 
