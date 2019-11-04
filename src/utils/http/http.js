@@ -41,6 +41,12 @@ function checkStatus (response) {
     if (response.data.code !== 200) {
       Message({ message: response.data.msg || '未知异常', type: 'error' })
     }
+    if (response.data.data.constructor === Array && response.data.data.length === 0) {
+      Message.warning('暂无数据')
+    }
+    if (response.data.data.constructor === Object && JSON.stringify(response.data.data) === '{}') {
+      Message.warning('暂无数据')
+    }
     return response
   }
   if (response.status === 401) {
